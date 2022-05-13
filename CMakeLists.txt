@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.8)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 project(falltergeist)
-set(falltergeist_VERSION  0.3.1)
+set(FALLTERGEIST_VERSION 0.3.1)
 
 if (USE_CLANG_TIDY)
 	message(STATUS "Using clang-tidy")
@@ -94,23 +94,23 @@ if(MSVC)
         set(_additional_includes "package/windows.rc" pchheader.cpp ${HEADERS})
 endif()
 
-add_executable(falltergeist main.cpp ${SOURCES} ${_additional_includes})
+add_executable(${PROJECT_NAME} main.cpp ${SOURCES} ${_additional_includes})
 
-set_target_properties(falltergeist PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 17
 	CXX_STANDARD_REQUIRED YES
 	CXX_EXTENSIONS NO
 )
 
 if(MSVC)
-	set_property(TARGET falltergeist APPEND PROPERTY LINK_FLAGS_DEBUG /NODEFAULTLIB:MSVCRT)
+	set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_FLAGS_DEBUG /NODEFAULTLIB:MSVCRT)
 
-	set_property(TARGET falltergeist APPEND PROPERTY LINK_FLAGS_RELEASE /NODEFAULTLIB:MSVCRTD)
-	set_property(TARGET falltergeist APPEND PROPERTY LINK_FLAGS_MINSIZEREL /NODEFAULTLIB:MSVCRTD)
-	set_property(TARGET falltergeist APPEND PROPERTY LINK_FLAGS_RELWITHDEBINFO /NODEFAULTLIB:MSVCRTD)
+	set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_FLAGS_RELEASE /NODEFAULTLIB:MSVCRTD)
+	set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_FLAGS_MINSIZEREL /NODEFAULTLIB:MSVCRTD)
+	set_property(TARGET ${PROJECT_NAME} APPEND PROPERTY LINK_FLAGS_RELWITHDEBINFO /NODEFAULTLIB:MSVCRTD)
 
 	include(cmake/modules/PrecompiledHeader.cmake)
-	add_precompiled_header(falltergeist pchheader.h FORCEINCLUDE SOURCE_CXX pchheader.cpp)
+	add_precompiled_header(${PROJECT_NAME} pchheader.h FORCEINCLUDE SOURCE_CXX pchheader.cpp)
 
 	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 	source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" PREFIX "Source Files" FILES ${SOURCES})
@@ -122,16 +122,16 @@ else()
 endif()
 
 if (CONAN_LIBS)
-	target_link_libraries(falltergeist ${CONAN_LIBS})
+	target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
 else()
 	target_link_libraries(
-		falltergeist
-		${ZLIB_LIBRARIES}
-		${SDL2_LIBRARY}
-		${SDL_MIXER_LIBRARY}
-		${SDL_IMAGE_LIBRARY}
-		${OPENGL_gl_LIBRARY}
-		GLEW::glew
+        ${PROJECT_NAME}
+        ${ZLIB_LIBRARIES}
+        ${SDL2_LIBRARY}
+        ${SDL_MIXER_LIBRARY}
+        ${SDL_IMAGE_LIBRARY}
+        ${OPENGL_gl_LIBRARY}
+        GLEW::glew
         falltergeist_vfs
 	)
 endif()
@@ -141,8 +141,3 @@ include(cmake/install/linux.cmake)
 include(cmake/install/apple.cmake)
 
 include(CPack)
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach(dir ${dirs})
-    message(STATUS "dir='${dir}'")
-endforeach()
