@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Base/Singleton.h"
-#include "VFS/VFS.h"
+#include "falltergeist/vfs/VFS.h"
 
 namespace Falltergeist
 {
